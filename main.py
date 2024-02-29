@@ -1,3 +1,6 @@
+# This file was created by: Chris Cozort
+
+# import libraries and modules
 import pygame as pg
 from settings import *
 from sprites import *
