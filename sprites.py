@@ -2,6 +2,7 @@
 import pygame as pg
 from settings import *
 #write a player class
+#newer file change
 
 
 #write a wall class
