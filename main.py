@@ -39,7 +39,7 @@ class Game:
             for line in f:
                 print(line)
                 self.map_data.append(line)
-                print(self.map_data)
+                
     def new(self):
         print("create new game...")
         self.all_sprites = pg.sprite.Group()
