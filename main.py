@@ -8,8 +8,30 @@ from sprites import *
 import sys
 from random import randint
 from os import path
+from math import floor
 
 # create a game class 
+
+class Cooldown():
+    def __init__(self):
+        self.current_time = 0
+        self.event_time = 0
+        self.delta = 0
+
+    def ticking(self):
+        self.current_time = floor((pg.time.get_ticks())/1000)
+        self.delta = self.current_time - self.event_time
+
+    def countdown(self, x):
+        x = x - self.delta
+        if x != None:
+            return x
+    def event_reset(self):
+        self.event_time = floor((pg.time.get_ticks())/1000)
+   
+    def timer(self):
+        self.current_time = floor((pg.time.get_ticks())/1000)
+
 class Game:
     # behold the methods...
     def __init__(self):
@@ -28,7 +50,7 @@ class Game:
     def load_data(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, "images")
-        self.player_img = pg.image.load(path.join(img_folder, "deer.png")).convert_alpha()
+        self.player_img = pg.image.load(path.join(img_folder, "deercircle.png")).convert_alpha()
         self.map_data = []
         '''
         The with statement is a context manager in Python. 
@@ -41,6 +63,7 @@ class Game:
                 self.map_data.append(line)
                 
     def new(self):
+        self.test_timer = Cooldown()
         print("create new game...")
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
@@ -58,8 +81,6 @@ class Game:
                     print("a wall at", row, col)
                     Wall(self, col, row)
                 if tile == 'P':
-                    self.p1col = col
-                    self.p1row = row
                     self.player = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
@@ -104,7 +125,7 @@ class Game:
         self.screen.fill(BGCOLOR)
         self.draw_grid()
         self.all_sprites.draw(self.screen)
-        self.draw_text(self.screen, str(self.player.moneybag), 64, WHITE, 1, 1)
+        self.draw_text(self.screen, "Time " + str(self.test_timer.countdown(45)), 24, WHITE, WIDTH/2 - 32, 2)
         pg.display.flip()
      
 

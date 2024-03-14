@@ -13,3 +13,5 @@ PLAYER_SPEED = 300
 BLUE = (0,0,255)
 WHITE = (255,255,255)
 #new change
+ORANGE = (255,165,0)
+POWER_UP_EFFECTS = ["I can fly", "I'm invincible", "I'm bulletproof"]
