@@ -17,6 +17,12 @@ from math import floor
 Sources: 
 cozort_chris_game_engine_Spring_2024: https://github.com/ccozort/cozort_chris_game_engine_Spring_2024
 
+DESIGN GOALS: 
+1) CREATE A TIMER FOR SCOREBOARD AND GAME COUNTDOWN
+2) IMPLEMENT MOBS 
+3) IMPLEMENT COINS AND POWERUPS FOR PLAYER
+
+
 '''
 
 # Added class for timer and cooldown
