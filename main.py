@@ -55,6 +55,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.load_data()
     
+    #load_data func to get image from file path
     def load_data(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, "images")
@@ -96,6 +97,7 @@ class Game:
                     Mob(self, col, row)
                 if tile == 'U':
                     PowerUp(self, col, row)
+            #implement coins, powerups, etc on gameboard
             
     def run(self):
         self.playing = True
