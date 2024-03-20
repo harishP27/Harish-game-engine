@@ -5,6 +5,7 @@
 import pygame as pg
 from settings import *
 from sprites import *
+from timer import *
 import sys
 from random import randint
 from os import path
@@ -12,39 +13,40 @@ from math import floor
 
 # create a game class 
 
+'''
+Sources: 
+cozort_chris_game_engine_Spring_2024: https://github.com/ccozort/cozort_chris_game_engine_Spring_2024
+
+'''
+
+# Added class for timer and cooldown
 class Cooldown():
     def __init__(self):
         self.current_time = 0
         self.event_time = 0
         self.delta = 0
-
+        
     def ticking(self):
         self.current_time = floor((pg.time.get_ticks())/1000)
         self.delta = self.current_time - self.event_time
-
+    
     def countdown(self, x):
         x = x - self.delta
         if x != None:
             return x
     def event_reset(self):
         self.event_time = floor((pg.time.get_ticks())/1000)
-   
+    
     def timer(self):
         self.current_time = floor((pg.time.get_ticks())/1000)
 
+#Class Game
 class Game:
-    # behold the methods...
     def __init__(self):
         pg.init()
-        # 
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
-        # 
-        pg.display.set_caption("My First Video Game")
-        # 
+        pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
-        pg.key.set_repeat(500, 100)
-        self.running = True
-        # later on we'll story game info with this
         self.load_data()
     
     def load_data(self):
@@ -107,6 +109,7 @@ class Game:
     def input(self): 
         pass
     def update(self):
+        self.test_timer.ticking()
         self.all_sprites.update()
     
     def draw_grid(self):
@@ -120,13 +123,16 @@ class Game:
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.topleft = (x*TILESIZE,y*TILESIZE)
-        surface.blit(text_surface, text_rect)
+        
+    
     def draw(self):
-        self.screen.fill(BGCOLOR)
-        self.draw_grid()
-        self.all_sprites.draw(self.screen)
-        self.draw_text(self.screen, "Time " + str(self.test_timer.countdown(45)), 24, WHITE, WIDTH/2 - 32, 2)
-        pg.display.flip()
+            self.screen.fill(BGCOLOR)
+            #self.screen.blit(self.background_img, self.background_rect)
+            self.draw_grid()
+            self.all_sprites.draw(self.screen)
+            self.draw_text(self.screen, "Time " + str(self.test_timer.countdown(45)), 24, YELLOW, WIDTH/2 - 32, 2)
+            self.draw_text(self.screen, "Score " + str (self.player.moneybag),24, YELLOW, WIDTH/2 - 32,30)
+            pg.display.flip()
      
 
     def events(self):
@@ -160,7 +166,6 @@ while True:
     g.new()
     g.run()
     # g.show_go_screen()
-
 
 
 
