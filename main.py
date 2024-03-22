@@ -54,12 +54,14 @@ class Game:
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         self.load_data()
+        self.running = True
     
     #load_data func to get image from file path
     def load_data(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, "images")
         self.player_img = pg.image.load(path.join(img_folder, "deercircle.png")).convert_alpha()
+
         self.map_data = []
         '''
         The with statement is a context manager in Python. 
@@ -79,6 +81,8 @@ class Game:
         self.coins = pg.sprite.Group()
         self.mobs = pg.sprite.Group()
         self.power_ups = pg.sprite.Group()
+        self.player = pg.sprite.Group()
+        self.player.moneybag = 0
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -119,6 +123,8 @@ class Game:
     def update(self):
         self.test_timer.ticking()
         self.all_sprites.update()
+        if self.player.hitpoints < 1:
+                self.playing = False
     
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -140,7 +146,7 @@ class Game:
             #self.screen.blit(self.background_img, self.background_rect)
             self.draw_grid()
             self.all_sprites.draw(self.screen)
-            self.draw_text(self.screen, "Time " + str(self.test_timer.countdown(45)), 24, YELLOW, WIDTH/2 - 32, 2)
+            self.draw_text(self.screen, "Time " + str(self.test_timer.countdown(90)), 24, YELLOW, WIDTH/2 - 32, 2)
             self.draw_text(self.screen, "Score " + str (self.player.moneybag),24, YELLOW, WIDTH/2 - 32,30)
             pg.display.flip()
      
