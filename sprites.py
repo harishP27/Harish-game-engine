@@ -112,6 +112,9 @@ class Player(pg.sprite.Sprite):
             if str(hits[0].__class__.__name__) == "PowerUp":
                 print("speed boost")
                 self.speed += 150
+            if self.moneybag == 9:
+                sys.exit()
+                print("You won")
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):

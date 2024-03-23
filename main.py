@@ -146,7 +146,7 @@ class Game:
             #self.screen.blit(self.background_img, self.background_rect)
             self.draw_grid()
             self.all_sprites.draw(self.screen)
-            self.draw_text(self.screen, "Time " + str(self.test_timer.countdown(90)), 24, YELLOW, WIDTH/2 - 32, 2)
+            self.draw_text(self.screen, "Time " + str(self.test_timer.countdown(120)), 24, YELLOW, WIDTH/2 - 32, 2)
             self.draw_text(self.screen, "Score " + str (self.player.moneybag),24, YELLOW, WIDTH/2 - 32,30)
             pg.display.flip()
      
@@ -172,9 +172,29 @@ class Game:
                 #     if event.key == pg.K_DOWN:
                 #         self.player.move(dy=1)
     def show_start_screen(self):
-        pass
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "This is the start screen - press any key to play", 24, WHITE, WIDTH/2, HEIGHT/2)
+        pg.display.flip()
+        self.wait_for_key()
+        
     def show_go_screen(self):
-        pass
+        if not self.running:
+            return
+        self.screen.fill(BGCOLOR)
+        self.draw_text(self.screen, "This is the GO screen - press any key to play", 24, WHITE, WIDTH/2, HEIGHT/2)
+        pg.display.flip()
+        self.wait_for_key()
+
+    def wait_for_key(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    waiting = False
+                    self.quit()
+                if event.type == pg.KEYUP:
+                    waiting = False
 ####################### Instantiate game... ###################
 g = Game()
 # g.show_go_screen()
