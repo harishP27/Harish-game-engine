@@ -94,6 +94,7 @@ class Player(pg.sprite.Sprite):
         self.collide_with_group(self.game.power_ups, True)
         # I made it so that you collide with enemy the same way you collide with a coin. 
         self.collide_with_group(self.game.mobs, True)
+        self.collide_with_group(self.game.deathblocks, True)
 
 
 # 
@@ -112,6 +113,10 @@ class Player(pg.sprite.Sprite):
             if str(hits[0].__class__.__name__) == "PowerUp":
                 print("speed boost")
                 self.speed += 150
+            if str(hits[0].__class__.__name__) == "Deathblock":
+                print("oof")
+                self.speed -= 150
+
             if self.moneybag == 9:
                 sys.exit()
                 print("You won")
@@ -145,7 +150,7 @@ class Mob(pg.sprite.Sprite):
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(RED)
-        # self.image = self.game.mob_img
+        self.image = self.game.mob_img
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -192,8 +197,7 @@ class Coin(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.coins
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(WHITE)
+        self.image = self.game.coin_img
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -205,8 +209,7 @@ class PowerUp(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.power_ups
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(ORANGE)
+        self.image = self.game.chicken_img
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -215,17 +218,16 @@ class PowerUp(pg.sprite.Sprite):
 
 class Deathblock(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.walls
+        self.groups = game.all_sprites, game.deathblocks
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(RED)
+        self.image = self.game.deathblock_img
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-        self.speed = 0
+        
 
 
 

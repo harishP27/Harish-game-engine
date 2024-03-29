@@ -60,7 +60,15 @@ class Game:
     def load_data(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, "images")
-        self.player_img = pg.image.load(path.join(img_folder, "deercircle.png")).convert_alpha()
+        self.background_img = pg.image.load(path.join(img_folder, 'background.png')).convert_alpha()
+        self.background_rect = self.background_img.get_rect()
+        self.player_img = pg.image.load(path.join(img_folder, "spiderman.png")).convert_alpha()
+        self.mob_img = pg.image.load(path.join(img_folder, "venomg.png",)).convert_alpha()
+        self.deathblock_img = pg.image.load(path.join(img_folder, "spike.png",)).convert_alpha()
+        self.chicken_img = pg.image.load(path.join(img_folder, "realchicken.png")).convert_alpha()
+        self.coin_img = pg.image.load(path.join(img_folder, "coin.png")).convert_alpha()
+        
+        
 
         self.map_data = []
         '''
@@ -82,6 +90,7 @@ class Game:
         self.mobs = pg.sprite.Group()
         self.power_ups = pg.sprite.Group()
         self.player = pg.sprite.Group()
+        self.deathblocks = pg.sprite.Group()
         self.player.moneybag = 0
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
@@ -101,6 +110,8 @@ class Game:
                     Mob(self, col, row)
                 if tile == 'U':
                     PowerUp(self, col, row)
+                if tile == 'D':
+                    Deathblock(self, col, row)
             #implement coins, powerups, etc on gameboard
             
     def run(self):
@@ -144,6 +155,7 @@ class Game:
     def draw(self):
             self.screen.fill(BGCOLOR)
             #self.screen.blit(self.background_img, self.background_rect)
+            self.screen.blit(self.background_img, self.background_rect)
             self.draw_grid()
             self.all_sprites.draw(self.screen)
             self.draw_text(self.screen, "Time " + str(self.test_timer.countdown(120)), 24, YELLOW, WIDTH/2 - 32, 2)
