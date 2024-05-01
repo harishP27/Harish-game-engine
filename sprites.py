@@ -6,8 +6,33 @@ from settings import *
 from random import choice
 from random import randint
 import sys
+from os import path
 
 # write a player class
+
+
+
+dir = path.dirname(__file__)
+img_dir = path.join(dir, 'images')
+
+
+# sets up file with multiple images...
+class Spritesheet:
+    # utility class for loading and parsing spritesheets
+    def __init__(self, filename):
+        self.spritesheet = pg.image.load(filename).convert()
+
+    def get_image(self, x, y, width, height):
+        # grab an image out of a larger spritesheet
+        image = pg.Surface((width, height))
+        image.blit(self.spritesheet, (0, 0), (x, y, width, height))
+        # image = pg.transform.scale(image, (width, height))
+        image = pg.transform.scale(image, (width * 4, height * 4))
+        return image
+    
+
+
+
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites
@@ -23,12 +48,24 @@ class Player(pg.sprite.Sprite):
         self.moneybag = 0
         self.speed = 300
         self.hitpoints = 1
+        self.shield = 100
         self.running = True
 
     def death(self):
         self.x = self.game.p1col * TILESIZE
         self.y = self.game.p1row * TILESIZE
         print("You died")
+
+    def draw_shield_bar(self, surface, x, y):
+        if self.shield < 0:
+            self.shield = 0
+        BAR_LENGTH = 100
+        BAR_HEIGHT = 100
+        fill = (self.shield/100) * BAR_LENGTH
+        outline_rect = pg.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
+        fill_rect = pg.Rect(x, y, fill, BAR_HEIGHT)
+        pg.draw.rect(surface, WHITE, outline_rect, 1)
+        pg.draw.rect(surface, BLUE, fill_rect)
 
     
     def get_keys(self):
@@ -94,7 +131,7 @@ class Player(pg.sprite.Sprite):
         self.collide_with_group(self.game.power_ups, True)
         # I made it so that you collide with enemy the same way you collide with a coin. 
         self.collide_with_group(self.game.mobs, True)
-        self.collide_with_group(self.game.deathblocks, True)
+        self.collide_with_group(self.game.spikes, True)
 
 
 # 
@@ -113,11 +150,13 @@ class Player(pg.sprite.Sprite):
             if str(hits[0].__class__.__name__) == "PowerUp":
                 print("speed boost")
                 self.speed += 150
-            if str(hits[0].__class__.__name__) == "Deathblock":
+            if str(hits[0].__class__.__name__) == "Spike":
                 print("oof")
                 self.speed -= 150
-
-            if self.moneybag == 9:
+            if str(hits[0].__class__.__name__) == "Mob2":
+                print("You lost")
+                sys.exit()
+            if self.moneybag == 12:
                 sys.exit()
                 print("You won")
 
@@ -126,8 +165,7 @@ class Wall(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(PURPLE)
+        self.image = self.game.lights_img
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -148,8 +186,8 @@ class Mob(pg.sprite.Sprite):
         self.groups = game.all_sprites, game.mobs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(RED)
+        #self.image = pg.Surface((TILESIZE, TILESIZE))
+        #self.image.fill(RED)
         self.image = self.game.mob_img
         self.rect = self.image.get_rect()
         self.x = x
@@ -157,7 +195,7 @@ class Mob(pg.sprite.Sprite):
         self.vx, self.vy = 100, 100
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.speed = 1
+        self.speed = 300
         
     def collide_with_walls(self, dir):
         if dir == 'x':
@@ -216,18 +254,88 @@ class PowerUp(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
-class Deathblock(pg.sprite.Sprite):
+class Spike(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.deathblocks
+        self.groups = game.all_sprites, game.spikes
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = self.game.deathblock_img
+        self.image = self.game.spike_img
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
+class Shield(pg.sprite.Sprite):
+    def __init__(self, player, game, x, y):
+        self.groups = game.all_sprites, game.shields
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = self.game.shield_img
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+        self.player = player
+
         
+
+
+class Mob2(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.mobs
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = self.game.mob2_img
+        #self.image = pg.Surface((TILESIZE, TILESIZE))
+        #self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        #self.x = x
+        #self.y = y
+        self.vx, self.vy = 100, 100
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+        self.speed = 150
+
+    def collide_with_walls(self, dir):
+        if dir == 'x':
+            # print('colliding on the x')
+            hits = pg.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                self.vx *= -1
+                self.rect.x = self.x
+        if dir == 'y':
+            # print('colliding on the y')
+            hits = pg.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                self.vy *= -1
+                self.rect.y = self.y
+    def update(self):
+        # self.rect.x += 1
+        self.x += self.vx * self.game.dt
+        self.y += self.vy * self.game.dt
+
+        if self.rect.x < self.game.player.rect.x:
+            self.vx = 100
+        if self.rect.x > self.game.player.rect.x:
+            self.vx = -100    
+        if self.rect.y < self.game.player.rect.y:
+            self.vy = 100
+        if self.rect.y > self.game.player.rect.y:
+            self.vy = -100
+        self.rect.x = self.x
+        self.collide_with_walls('x')
+        self.rect.y = self.y
+        self.collide_with_walls('y')
+
+
+
+
+
+
+
+
 
 
 

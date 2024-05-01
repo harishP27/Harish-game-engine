@@ -16,11 +16,18 @@ from math import floor
 '''
 Sources: 
 cozort_chris_game_engine_Spring_2024: https://github.com/ccozort/cozort_chris_game_engine_Spring_2024
+CHATGPT
 
 DESIGN GOALS: 
 1) CREATE A TIMER FOR SCOREBOARD AND GAME COUNTDOWN
 2) IMPLEMENT MOBS 
 3) IMPLEMENT COINS AND POWERUPS FOR PLAYER
+
+BETA GOALS:
+ADD A SPIKE BLOCK TO SLOW DOWN PLAYER
+IF NOT ACCEPTED, SHIELD FEATURE
+
+CREATE
 
 
 '''
@@ -63,10 +70,13 @@ class Game:
         self.background_img = pg.image.load(path.join(img_folder, 'background.png')).convert_alpha()
         self.background_rect = self.background_img.get_rect()
         self.player_img = pg.image.load(path.join(img_folder, "spiderman.png")).convert_alpha()
-        self.mob_img = pg.image.load(path.join(img_folder, "venomg.png",)).convert_alpha()
-        self.deathblock_img = pg.image.load(path.join(img_folder, "spike.png",)).convert_alpha()
+        self.mob_img = pg.image.load(path.join(img_folder, "venomg.png")).convert_alpha()
+        self.spike_img = pg.image.load(path.join(img_folder, "spike.png",)).convert_alpha()
         self.chicken_img = pg.image.load(path.join(img_folder, "realchicken.png")).convert_alpha()
         self.coin_img = pg.image.load(path.join(img_folder, "coin.png")).convert_alpha()
+        self.mob2_img = pg.image.load(path.join(img_folder, "venom_mob.png")).convert_alpha()
+        self.lights_img = pg.image.load(path.join(img_folder, "lights.png")).convert_alpha()
+        self.shield_img = pg.image.load(path.join(img_folder, "shield.png")).convert_alpha()
         
         
 
@@ -90,7 +100,8 @@ class Game:
         self.mobs = pg.sprite.Group()
         self.power_ups = pg.sprite.Group()
         self.player = pg.sprite.Group()
-        self.deathblocks = pg.sprite.Group()
+        self.spikes = pg.sprite.Group()
+        self.shields = pg.sprite.Group()
         self.player.moneybag = 0
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
@@ -111,7 +122,9 @@ class Game:
                 if tile == 'U':
                     PowerUp(self, col, row)
                 if tile == 'D':
-                    Deathblock(self, col, row)
+                    Spike(self, col, row)
+                if tile == 'H':
+                    Mob2(self, col, row)
             #implement coins, powerups, etc on gameboard
             
     def run(self):
