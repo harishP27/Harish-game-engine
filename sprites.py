@@ -254,12 +254,15 @@ class PowerUp(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
+#defining a new spike class
 class Spike(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.spikes
+        #below calling the super class
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = self.game.spike_img
+        #getting imported image through rect
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
