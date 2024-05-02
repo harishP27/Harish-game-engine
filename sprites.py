@@ -30,6 +30,41 @@ class Spritesheet:
         image = pg.transform.scale(image, (width * 4, height * 4))
         return image
     
+def draw_shield_bar(shield, surface, x, y):
+        if shield < 0:
+            shield = 0
+        BAR_LENGTH = 64
+        BAR_HEIGHT = 32
+        fill = (shield/100) * BAR_LENGTH
+        outline_rect = pg.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
+        fill_rect = pg.Rect(x, y, fill, BAR_HEIGHT)
+        pg.draw.rect(surface, BLUE, outline_rect, 1)
+        pg.draw.rect(surface, GREEN, fill_rect)
+    
+class Shield(pg.sprite.Sprite):
+    def __init__(self, game, x, y, w, h, center, pct):
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        #pg.sprite.Sprite.__init__(self)
+        self.image = pg.Surface([w, h])  # Adjusted size for the shield
+        #self.image.set_colorkey(BLACK)  # Set transparent background
+        self.image.fill(GREEN)  # Fill with white color (adjust as needed)
+        #pg.draw.circle(self.image, BLUE, (16, 16), 16)  # Draw a blue circle (adjust as needed)
+        self.rect = self.image.get_rect()
+        #self.player = player
+        self.rect.x = x
+        self.rect.y = y
+        self.center = center
+        self.pct = pct
+
+    def update(self):
+        self.rect.x = self.center.rect.x
+        self.rect.y = self.center.rect.y
+
+
+
+    
 
 
 
@@ -38,17 +73,20 @@ class Player(pg.sprite.Sprite):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        #self.image = pg.Surface((TILESIZE, TILESIZE))
+        #self.player = player
+        self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image = game.player_img
         #self.image.fill(GREEN)
         self.rect = self.image.get_rect()
+        self.rect.center = (512,384)
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.moneybag = 0
         self.speed = 300
-        self.hitpoints = 1
-        self.shield = 100
+        self.hitpoints = 100
+        #self.shield = 100
+        self.healthbar = Shield(self.game, self.rect.x, self.rect.y, self.rect.w, 5, self, self.hitpoints)
         self.running = True
 
     def death(self):
@@ -56,16 +94,7 @@ class Player(pg.sprite.Sprite):
         self.y = self.game.p1row * TILESIZE
         print("You died")
 
-    def draw_shield_bar(self, surface, x, y):
-        if self.shield < 0:
-            self.shield = 0
-        BAR_LENGTH = 100
-        BAR_HEIGHT = 100
-        fill = (self.shield/100) * BAR_LENGTH
-        outline_rect = pg.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
-        fill_rect = pg.Rect(x, y, fill, BAR_HEIGHT)
-        pg.draw.rect(surface, WHITE, outline_rect, 1)
-        pg.draw.rect(surface, BLUE, fill_rect)
+    
 
     
     def get_keys(self):
@@ -269,20 +298,10 @@ class Spike(pg.sprite.Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
-class Shield(pg.sprite.Sprite):
-    def __init__(self, player, game, x, y):
-        self.groups = game.all_sprites, game.shields
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = self.game.shield_img
-        self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-        self.player = player
 
+    
         
+
 
 
 class Mob2(pg.sprite.Sprite):

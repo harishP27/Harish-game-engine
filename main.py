@@ -77,7 +77,7 @@ class Game:
         self.coin_img = pg.image.load(path.join(img_folder, "coin.png")).convert_alpha()
         self.mob2_img = pg.image.load(path.join(img_folder, "venom_mob.png")).convert_alpha()
         self.lights_img = pg.image.load(path.join(img_folder, "lights.png")).convert_alpha()
-        self.shield_img = pg.image.load(path.join(img_folder, "shield.png")).convert_alpha()
+        #self.shield_img = pg.image.load(path.join(img_folder, "shield.png")).convert_alpha()
         
         
 
@@ -102,8 +102,16 @@ class Game:
         self.power_ups = pg.sprite.Group()
         self.player = pg.sprite.Group()
         self.spikes = pg.sprite.Group()
-        self.shields = pg.sprite.Group()
+        #self.shields = pg.sprite.Group()
+        #self.game = pg.sprite.Group()
         self.player.moneybag = 0
+        #self.player = Player()
+        #self.all_sprites.add(self.player)
+        #self.shields = Shield(self.player)
+        #self.all_sprites.add(self.shields)
+
+        
+      
         # self.player1 = Player(self, 1, 1)
         # for x in range(10, 20):
         #     Wall(self, x, 5)
@@ -129,6 +137,7 @@ class Game:
             #implement coins, powerups, etc on gameboard
             
     def run(self):
+        
         self.playing = True
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
@@ -172,6 +181,7 @@ class Game:
             self.screen.blit(self.background_img, self.background_rect)
             self.draw_grid()
             self.all_sprites.draw(self.screen)
+            #self.player.draw_shield_bar(self.screen, 32, 32)
             self.draw_text(self.screen, "Time " + str(self.test_timer.countdown(120)), 24, YELLOW, WIDTH/2 - 32, 2)
             self.draw_text(self.screen, "Score " + str (self.player.moneybag),24, YELLOW, WIDTH/2 - 32,30)
             pg.display.flip()
