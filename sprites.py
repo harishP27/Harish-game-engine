@@ -29,10 +29,13 @@ class Spritesheet:
         # image = pg.transform.scale(image, (width, height))
         image = pg.transform.scale(image, (width * 4, height * 4))
         return image
-    
+
+
+#function to draw shield/healthbar
 def draw_shield_bar(shield, surface, x, y):
         if shield < 0:
             shield = 0
+        #bar length and bar height
         BAR_LENGTH = 64
         BAR_HEIGHT = 32
         fill = (shield/100) * BAR_LENGTH
@@ -41,16 +44,18 @@ def draw_shield_bar(shield, surface, x, y):
         pg.draw.rect(surface, BLUE, outline_rect, 1)
         pg.draw.rect(surface, GREEN, fill_rect)
     
+
+#shield class to follow player and healthbar elements
 class Shield(pg.sprite.Sprite):
+    #parameters for height width x y etc
     def __init__(self, game, x, y, w, h, center, pct):
         self.groups = game.all_sprites
+        #calling superclass pg.sprite.Sprite
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         #pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface([w, h])  # Adjusted size for the shield
-        #self.image.set_colorkey(BLACK)  # Set transparent background
-        self.image.fill(GREEN)  # Fill with white color (adjust as needed)
-        #pg.draw.circle(self.image, BLUE, (16, 16), 16)  # Draw a blue circle (adjust as needed)
+        self.image = pg.Surface([w, h])  
+        self.image.fill(GREEN)  
         self.rect = self.image.get_rect()
         #self.player = player
         self.rect.x = x
@@ -58,6 +63,7 @@ class Shield(pg.sprite.Sprite):
         self.center = center
         self.pct = pct
 
+    #update function to allow the healthbar to stay with player using center and self.rect
     def update(self):
         self.rect.x = self.center.rect.x
         self.rect.y = self.center.rect.y
@@ -85,7 +91,7 @@ class Player(pg.sprite.Sprite):
         self.moneybag = 0
         self.speed = 300
         self.hitpoints = 100
-        #self.shield = 100
+        #calling 
         self.healthbar = Shield(self.game, self.rect.x, self.rect.y, self.rect.w, 5, self, self.hitpoints)
         self.running = True
 
@@ -228,7 +234,7 @@ class Mob(pg.sprite.Sprite):
         self.vx, self.vy = 100, 100
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.speed = 300
+        self.speed = 1000
         
     def collide_with_walls(self, dir):
         if dir == 'x':
