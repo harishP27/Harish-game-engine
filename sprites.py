@@ -161,6 +161,7 @@ class Player(pg.sprite.Sprite):
         # I made it so that you collide with enemy the same way you collide with a coin. 
         self.collide_with_group(self.game.mobs, True)
         self.collide_with_group(self.game.spikes, True)
+        
 
 
 # 
@@ -170,7 +171,7 @@ class Player(pg.sprite.Sprite):
         if hits:
             if str(hits[0].__class__.__name__) == 'Mob':
                 print("you died")
-                self.hitpoints -=1
+                self.hitpoints -= 34
                 # pg.quit()
                 # sys.exit()
             if str(hits[0].__class__.__name__) == "Coin":
@@ -185,6 +186,9 @@ class Player(pg.sprite.Sprite):
             if str(hits[0].__class__.__name__) == "Mob2":
                 print("You lost")
                 sys.exit()
+            #if str(hits[0].__class__.__name__) == "Mob":
+                #print("ok")
+                self.hitpoints -= 10
             if self.moneybag == 12:
                 sys.exit()
                 print("You won")
