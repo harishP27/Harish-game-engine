@@ -92,7 +92,7 @@ class Player(pg.sprite.Sprite):
         self.speed = 300
         self.hitpoints = 100
         #calling 
-        self.healthbar = Shield(self.game, self.rect.x, self.rect.y, self.rect.w, 5, self, self.hitpoints)
+        self.shield = Shield(self.game, self.rect.x, self.rect.y, self.rect.w, 5, self, self.hitpoints)
         self.running = True
 
     def death(self):
